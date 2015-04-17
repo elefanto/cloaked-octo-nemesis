@@ -11,7 +11,7 @@ class Arr {
 
 	public:
 		Arr();
-		Arr(int arraySize);
+		Arr(size_t arraySize);
 		inline ~Arr(){ delete[] ptr; }
 
 		inline int 	get_size(){ return size; }
