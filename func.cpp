@@ -11,7 +11,7 @@ Arr::Arr() {
 		ptr[i] = 0;
 }
 
-Arr::Arr(int arraySize) {
+Arr::Arr(size_t arraySize) {
 	size = (arraySize > 0 ? arraySize : step);
 	ptr = new double[size];
 
