@@ -1,117 +1,110 @@
 #include <iostream>
+#include <iomanip>
 #include <cstdlib>
 
-#include "func.h"
+#include "virtual_classes.h"
 
 using namespace std;
 
-Arr::Arr() :
-	size(0), capacity(step), ptr(new double[capacity]) {
-	for (size_t i = 0; i < capacity; ++i)
-		ptr[i] = 0;
+Base_data::Base_data() {
+	info[0] = info[1] = info[2] = 0;
 }
 
-Arr::Arr(size_t arraySize) :
-	size(0), capacity(arraySize), ptr(new double[arraySize]) {
-	for (size_t i = 0; i < size; ++i)
-		ptr[i] = 0;
+Base_data::Base_data(int x, int y, int z) {
+	for (int i = 0; i < 3; ++i)
+		info[i] = 0;
 }
 
-Arr& Arr::operator=(const Arr& rhs) {
-	Arr temp(rhs);
-	swap(temp, *this);
+Base_data::Base_data(const Base_data &rhs) {
+	for (int i = 0; i < 3; ++i)
+		info[i] = rhs.info[i];
+}
+
+Vector::Vector() {
+	info[0] = info[1] = info[2] = 0;
+}
+
+Vector::Vector(int x, int y, int z) {
+	info[0] = x;
+	info[1] = y;
+	info[2] = z;
+}
+Vector& Vector::add(const Base_data &rhs) {
+	for (int i = 0; i < 3; ++i)
+		info[i] += rhs.info[i];
 	return *this;
 }
-
-Arr::Arr(const Arr &rhs) :
-	size(rhs.size), capacity(rhs.capacity), ptr(new double[capacity]) {
-	for (size_t i = 0; i < size; ++i) {
-		ptr[i] = rhs.ptr[i];
-	}
+void Vector::add_int(int value) {
+	for (int i = 0; i < 3; ++i)
+		info[i] += value;
+}
+void Vector::print() {
+	cout << "Vector:\t" << "[" << info[0] << ", " << info[1] << ", " << info[2] << "]" << endl;
 }
 
-void Arr::push(double value) {
-	if (size >= capacity) {
-		capacity += step;
-		change_size(capacity);
-	}
-	ptr[size] = value;
-	++size;
-}
-void Arr::pop() {
-	if (size > 0) {
-		ptr[size - 1] = 0;
-		--size;
-	}
-}
-void Arr::clear() {
-	for (size_t i = 0; i < size; ++i) {
-		ptr[i] = 0;
-	}
-	size = 0;
+Date::Date() {
+	info[0] = info[1] = info[2] = 0;
 }
 
-double Arr::get_element(size_t position) const {
-	assert(position < size);
-	return ptr[position];
-
+Date::Date(int x, int y, int z) {
+	info[0] = x;
+	info[1] = y;
+	info[2] = z;
+}
+Date& Date::add(const Base_data &rhs) {
+	int rhs_days = date_to_days(rhs);
+	int lhs_days = date_to_days(*this);
+	days_to_date(lhs_days + rhs_days, *this);
+	return *this;
+}
+void Date::add_int(int value) {
+	int all_days = date_to_days(*this);
+	days_to_date(all_days + value, *this);
+}
+void Date::print() {
+	cout << "Date:\t" << info[0] << "\\" << setw(2) << setfill('0') << info[1] << "\\" << setw(2) << setfill('0') << info[2] << endl;
 }
 
-void Arr::insert(size_t position, double value) {
-	if (position >= size) {
-		push(value);
-	} else {
-		if (size >= capacity) {
-			capacity += step;
-			change_size(capacity);
-		}
-		++size;
-		for (size_t i = size; i > position; --i) {
-			ptr[i] = ptr[i - 1];
-		}
-		ptr[position] = value;
-	}
+int date_to_days(const Base_data &rhs) {
+	return 365 * rhs.info[0] + 30*rhs.info[1]+rhs.info[2];
 }
 
-void Arr::get_array() const {
-	cout << "Array:\t";
-	for (size_t i = 0; i < size; ++i) {
-		cout << "[" << ptr[i] << "]";
-	}
-	cout << std::endl;
+void days_to_date(int value, Base_data &rhs) {
+	rhs.info[0] = value / 365;
+	rhs.info[1] = value % 365 / 31;
+	rhs.info[2] = value % 365 % 31;
 }
 
-void Arr::delete_element(size_t position) {
-	assert(position < size);
-	--size;
-	for (size_t i = position; i < size; ++i) {
-		ptr[i] = ptr[i + 1];
-	}
+
+Time::Time() {
+	info[0] = info[1] = info[2] = 0;
 }
 
-void Arr::change_size(size_t capacity) {
-	double *temp_arr = new double[capacity];
-	for (size_t i = 0; i < size; ++i) {
-		temp_arr[i] = ptr[i];
-	}
-	for (size_t i = size; i < capacity; ++i) {
-		temp_arr[i] = 0;
-	}
-	delete[] ptr;
-	ptr = temp_arr;
+Time::Time(int x, int y, int z) {
+	info[0] = x;
+	info[1] = y;
+	info[2] = z;
+}
+Time& Time::add(const Base_data &rhs) {
+	int rhs_days = time_to_seconds(rhs);
+	int lhs_days = time_to_seconds(*this);
+	seconds_to_time(lhs_days + rhs_days, *this);
+	return *this;
+}
+void Time::add_int(int value) {
+	int all_seconds = time_to_seconds(*this);
+	seconds_to_time(all_seconds + value, *this);
+}
+void Time::print() {
+	cout << "Time:\t" << info[0] << ":" << setw(2) << setfill('0') << info[1] << ":" << setw(2) << setfill('0') << info[2] << endl;
 }
 
-void Arr::swap(Arr& lhs, Arr& rhs) {
-	size_t temp_size = rhs.size;
-	rhs.size = lhs.size;
-	lhs.size = temp_size;
+int time_to_seconds(const Base_data &rhs) {
+	return 3600 * rhs.info[0] + 60*rhs.info[1]+rhs.info[2];
+}
 
-
-	size_t temp_capacity = rhs.capacity;
-	rhs.capacity = lhs.capacity;
-	lhs.capacity = temp_capacity;
-
-	double* temp_ptr = rhs.ptr;
-	rhs.ptr = lhs.ptr;
-	lhs.ptr = temp_ptr;
+void seconds_to_time(int value, Base_data &rhs) {
+	rhs.info[0] = value / 3600;
+	rhs.info[1] = value % 3600 / 60;
+	rhs.info[2] = value % 3600 % 60;
 }
