@@ -1,42 +1,32 @@
 #include <iostream>
-#include "func.h"
+#include "virtual_classes.h"
 
 using namespace std;
 
+
 int main() {
+	Base_data *ptr[3];
 
-	Arr test(0);
-	test.push(1);
-	test.push(2);
-	test.push(3);
-	test.push(4);
-	test.push(5);
-	test.push(6);
-	test.push(7);
-	test.push(8);
-	test.push(9);
-	test.push(10);
-	test.push(11);
-	test.get_array();
-	test.insert(3, 555.555);
-	test.get_array();
-	//	test.delete_element(3);
-	//	test.pop();
-	test.get_array();
+	ptr[0] = new Vector(1,2,3);
+	ptr[1] = new Date(0,0,0);
+	ptr[2] = new Time(1,2,3);
 
-	cout << test.get_capacity() << "\t" << test.get_size() << endl;
-
-	Arr test1 = test;
-	test1.get_array();
-
-	const Arr test2 = test1;
-	test2.get_array();
-
-	cout << test.get_capacity() << "\t" << test.get_size() << endl;
-	cout << test[1] << endl;
-	const size_t bla = 3;
-	cout << test[bla] << endl;
-
+	for(int i=0; i<3; ++i){
+		ptr[i]->print();
+	}
+	cout << endl;
+	for(int i=0; i<3; ++i){
+		ptr[i]->add_int(57);
+	}
+	for(int i=0; i<3; ++i){
+		ptr[i]->print();
+	}
+	cout << endl;
+	for(int i=0; i<3; ++i){
+		ptr[i]->add(*ptr[i]);
+	}
+	for(int i=0; i<3; ++i){
+		ptr[i]->print();
+	}
 	return 0;
 }
-
