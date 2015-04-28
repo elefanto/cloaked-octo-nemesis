@@ -1,58 +1,67 @@
-#ifndef FUNC_HPP
-#define FUNC_HPP
+#ifndef VIRTUAL_CLASSES_H
+#define VIRTUAL_CLASSES_H
 
 #include <cassert>
 
-class Arr {
-
-private:
-	const static size_t step = 10;
-	size_t size, capacity;
-	double *ptr;
-
-	void change_size(size_t);
-	void swap(Arr& lhs, Arr& rhs);
-
+class Base_data {
 public:
-	Arr();
-	Arr(size_t arraySize);
-	Arr(const Arr &rhs);
-	inline ~Arr() {
-		delete[] ptr;
+	int info[3];
+
+	Base_data();
+	Base_data(int x, int y, int z);
+	Base_data(const Base_data &rhs);
+	virtual inline ~Base_data() {
 	}
 
-	inline size_t get_size() const {
-		return size;
+	virtual Base_data& add(const Base_data &rhs) = 0;
+	virtual void add_int(int value) = 0;
+	virtual void print() = 0;
+};
+
+class Vector: public Base_data {
+public:
+
+	Vector();
+	Vector(int x, int y, int z);
+
+	virtual Vector& add(const Base_data &rhs);
+	virtual void add_int(int value);
+	virtual void print();
+	virtual inline ~Vector() {
 	}
-	inline size_t get_capacity() const {
-		return capacity;
+	inline int bla() {
+		return 10;
 	}
-	double get_element(size_t position) const;
-	void get_array() const;
+};
 
-	void push(double value);
-	void insert(size_t position, double value);
+class Date: public Base_data {
+public:
 
-	void delete_element(size_t position);
-	void pop();
-	void clear();
-
-	Arr& operator=(const Arr& rhs);
-
-	const Arr& operator=(const Arr& rhs);
-
-	inline const double operator[](size_t position) const {
-		assert(position < size);
-		assert(ptr);
-		return get_element(position);
-	}
-
-	inline double operator[](size_t position) {
-		assert(position < size);
-		assert(ptr);
-		return get_element(position);
+	Date();
+	Date(int x, int y, int z);
+	virtual Date& add(const Base_data &rhs);
+	virtual void add_int(int value);
+	virtual void print();
+	virtual inline ~Date() {
 	}
 
 };
 
+class Time: public Base_data {
+public:
+
+	Time();
+	Time(int x, int y, int z);
+	virtual Time& add(const Base_data &rhs);
+	virtual void add_int(int value);
+	virtual void print();
+	virtual inline ~Time() {
+	}
+
+};
+int date_to_days(const Base_data &rhs);
+void days_to_date(int value, Base_data &rhs);
+int time_to_seconds(const Base_data &rhs);
+void seconds_to_time(int value, Base_data &rhs);
 #endif
+
